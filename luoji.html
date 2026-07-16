@@ -1,0 +1,911 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>罗辑 · 从凡人蝼蚁，到宇宙执剑，终为文明守墓 — 《三体》人物主题站</title>
+<style>
+/* ===== 全局重置 & 字体 ===== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;700&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #050714;
+  color: #FFFFFF;
+  overflow-x: hidden;
+  line-height: 1.8;
+}
+::selection { background: rgba(79,195,247,0.3); color:#fff; }
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:#050714; }
+::-webkit-scrollbar-thumb { background:linear-gradient(180deg,#4FC3F7,#B388FF); border-radius:3px; }
+
+/* ===== 太空粒子画布 ===== */
+#particle-canvas {
+  position:fixed; top:0; left:0; width:100vw; height:100vh;
+  z-index:0; pointer-events:none;
+}
+
+/* ===== 通用工具 ===== */
+.section-padding { padding:100px 5%; position:relative; z-index:1; }
+.section-title {
+  text-align:center; font-size:2.4rem; font-weight:900;
+  background:linear-gradient(135deg,#FFD799,#FFB74D);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:60px; letter-spacing:6px;
+}
+.section-title::after {
+  content:''; display:block; width:80px; height:3px;
+  background:linear-gradient(90deg,#4FC3F7,#B388FF);
+  margin:16px auto 0; border-radius:2px;
+}
+.container { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+
+/* ===== 渐入动画 ===== */
+.fade-up { opacity:0; transform:translateY(40px); transition:all 0.8s cubic-bezier(0.22,1,0.36,1); }
+.fade-up.visible { opacity:1; transform:translateY(0); }
+
+/* ===== 卡片悬浮 ===== */
+.card-hover {
+  transition:all 0.3s ease;
+  background:rgba(79,195,247,0.03);
+  border:1px solid rgba(79,195,247,0.12);
+  border-radius:16px;
+  backdrop-filter:blur(10px);
+}
+.card-hover:hover {
+  transform:translateY(-6px);
+  box-shadow:0 20px 60px rgba(79,195,247,0.15);
+  border-color:rgba(79,195,247,0.3);
+}
+
+/* ===== 首页封面 ===== */
+.hero-section {
+  position:relative; width:100vw; min-height:100vh;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  text-align:center; z-index:1; overflow:hidden;
+}
+.hero-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at 30% 50%, rgba(79,195,247,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 30%, rgba(179,136,255,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(128,245,230,0.04) 0%, transparent 40%),
+    radial-gradient(ellipse at 20% 80%, rgba(255,215,153,0.03) 0%, transparent 30%);
+  z-index:0;
+}
+.hero-stars {
+  position:absolute; inset:0; z-index:0;
+  background-image:
+    radial-gradient(1px 1px at 5% 10%, rgba(255,255,255,0.8) 0, transparent 100%),
+    radial-gradient(1.5px 1.5px at 15% 35%, rgba(255,255,255,0.6) 0, transparent 100%),
+    radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.7) 0, transparent 100%),
+    radial-gradient(2px 2px at 40% 10%, rgba(255,255,255,0.5) 0, transparent 100%),
+    radial-gradient(1px 1px at 55% 70%, rgba(255,255,255,0.8) 0, transparent 100%),
+    radial-gradient(1.5px 1.5px at 70% 25%, rgba(255,255,255,0.6) 0, transparent 100%),
+    radial-gradient(1px 1px at 85% 55%, rgba(255,255,255,0.7) 0, transparent 100%),
+    radial-gradient(2px 2px at 95% 85%, rgba(255,255,255,0.5) 0, transparent 100%),
+    radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,0.6) 0, transparent 100%),
+    radial-gradient(1.5px 1.5px at 45% 45%, rgba(255,255,255,0.7) 0, transparent 100%),
+    radial-gradient(1px 1px at 60% 5%, rgba(255,255,255,0.5) 0, transparent 100%),
+    radial-gradient(2px 2px at 80% 40%, rgba(255,255,255,0.6) 0, transparent 100%),
+    radial-gradient(1px 1px at 35% 85%, rgba(255,255,255,0.7) 0, transparent 100%),
+    radial-gradient(1.5px 1.5px at 90% 15%, rgba(255,255,255,0.5) 0, transparent 100%),
+    radial-gradient(1px 1px at 75% 90%, rgba(255,255,255,0.6) 0, transparent 100%);
+  animation: twinkle 8s ease-in-out infinite alternate;
+}
+@keyframes twinkle {
+  0% { opacity:0.6; }
+  100% { opacity:1; }
+}
+
+/* 星云流动 */
+.hero-nebula {
+  position:absolute; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 40%, rgba(79,195,247,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 70% 60%, rgba(179,136,255,0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 300px at 50% 20%, rgba(128,245,230,0.02) 0%, transparent 60%);
+  animation: nebulaFlow 20s ease-in-out infinite alternate;
+}
+@keyframes nebulaFlow {
+  0% { transform:scale(1) translate(0,0); }
+  50% { transform:scale(1.05) translate(1%,-1%); }
+  100% { transform:scale(1) translate(-0.5%,0.5%); }
+}
+
+/* 流星 */
+.meteor {
+  position:absolute; width:3px; height:3px;
+  background:#fff; border-radius:50%;
+  box-shadow:0 0 6px 2px rgba(79,195,247,0.6);
+  animation: meteorShoot 6s linear infinite;
+  z-index:1;
+}
+.meteor::after {
+  content:''; position:absolute; top:0;
+  width:100px; height:1px;
+  background:linear-gradient(90deg, rgba(255,255,255,0.4), transparent);
+  transform:rotate(0deg) translateX(-100%);
+}
+.meteor:nth-child(1) { top:10%; left:80%; animation-delay:0s; }
+.meteor:nth-child(2) { top:30%; left:90%; animation-delay:3s; }
+.meteor:nth-child(3) { top:60%; left:70%; animation-delay:5s; }
+@keyframes meteorShoot {
+  0% { transform:translate(0,0) rotate(-35deg); opacity:0; }
+  5% { opacity:1; }
+  15% { transform:translate(-300px,200px) rotate(-35deg); opacity:0; }
+  100% { transform:translate(-300px,200px) rotate(-35deg); opacity:0; }
+}
+
+.hero-content { position:relative; z-index:2; max-width:900px; padding:0 20px; }
+
+.hero-title {
+  font-size:clamp(2.2rem,5.5vw,4.5rem); font-weight:900;
+  line-height:1.3; margin-bottom:24px;
+  background:linear-gradient(135deg,#FFD799 0%,#FFB74D 40%,#FFD799 70%,#FFAB40 100%);
+  background-size:200% 200%;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation: goldPulse 4s ease-in-out infinite;
+  letter-spacing:4px;
+}
+@keyframes goldPulse {
+  0% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+  100% { background-position:0% 50%; }
+}
+
+.hero-subtitle {
+  font-size:clamp(0.9rem,1.8vw,1.3rem);
+  color:#E0E0E0; font-weight:400;
+  letter-spacing:3px; line-height:2;
+  margin-bottom:40px;
+}
+
+.hero-slogan {
+  font-size:clamp(1rem,2vw,1.5rem);
+  font-weight:500;
+  background:linear-gradient(90deg,#4FC3F7,#80F5E6,#B388FF,#4FC3F7);
+  background-size:300% 100%;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation: sloganFlow 6s linear infinite;
+  letter-spacing:2px;
+  margin-bottom:60px;
+}
+@keyframes sloganFlow {
+  0% { background-position:0% 50%; }
+  100% { background-position:300% 50%; }
+}
+
+.hero-scroll-hint {
+  position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
+  color:rgba(255,255,255,0.4);
+  font-size:0.85rem; letter-spacing:4px;
+  animation: scrollBounce 2.5s ease-in-out infinite;
+  z-index:2;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+}
+@keyframes scrollBounce {
+  0%,100% { transform:translateX(-50%) translateY(0); }
+  50% { transform:translateX(-50%) translateY(10px); }
+}
+.scroll-arrow { width:20px; height:20px; border-right:2px solid rgba(255,255,255,0.3); border-bottom:2px solid rgba(255,255,255,0.3); transform:rotate(45deg); animation: arrowPulse 2s ease-in-out infinite; }
+@keyframes arrowPulse {
+  0%,100% { opacity:0.3; }
+  50% { opacity:0.8; }
+}
+
+/* ===== 旗帜导航 ===== */
+.nav-bar {
+  position:fixed; top:0; left:0; width:100%; z-index:1000;
+  padding:16px 5%; display:flex; justify-content:center; gap:clamp(8px,2vw,40px);
+  background:rgba(5,7,20,0.8); backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(79,195,247,0.1);
+  flex-wrap:wrap;
+}
+.nav-bar a {
+  color:rgba(255,255,255,0.6); text-decoration:none;
+  font-size:0.85rem; letter-spacing:2px;
+  transition:all 0.3s; padding:4px 8px;
+  border-radius:4px;
+}
+.nav-bar a:hover { color:#4FC3F7; background:rgba(79,195,247,0.08); }
+
+/* ===== 模块二：人物基础档案 ===== */
+.profile-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:24px; margin-top:40px;
+}
+.profile-card {
+  padding:32px; background:rgba(79,195,247,0.02);
+  border:1px solid rgba(79,195,247,0.08);
+  border-radius:16px; backdrop-filter:blur(8px);
+  transition:all 0.3s;
+}
+.profile-card:hover {
+  border-color:rgba(79,195,247,0.25);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(79,195,247,0.06);
+}
+.profile-label {
+  font-size:0.75rem; color:#90A4AE; letter-spacing:3px;
+  text-transform:uppercase; margin-bottom:8px;
+}
+.profile-value {
+  font-size:1.1rem; color:#FFFFFF; font-weight:500;
+  line-height:1.6;
+}
+.profile-value.gold { color:#FFD799; }
+.profile-value.blue { color:#4FC3F7; }
+.profile-tag {
+  display:inline-block; padding:3px 14px;
+  border:1px solid rgba(79,195,247,0.3);
+  border-radius:20px; font-size:0.8rem;
+  color:#4FC3F7; margin:3px 4px;
+}
+.profile-tag.gold { border-color:rgba(255,215,153,0.3); color:#FFD799; }
+
+/* ===== 模块三：时间线 ===== */
+.timeline-section { position:relative; }
+.timeline-track { position:relative; max-width:900px; margin:0 auto; padding:20px 0; }
+.timeline-line {
+  position:absolute; left:50%; top:0; bottom:0;
+  width:2px; background:linear-gradient(180deg,#4FC3F7,#B388FF,#4FC3F7);
+  transform:translateX(-50%);
+  animation: lineGlow 4s ease-in-out infinite;
+}
+@keyframes lineGlow {
+  0%,100% { opacity:0.4; }
+  50% { opacity:1; }
+}
+.timeline-item {
+  display:flex; align-items:flex-start;
+  margin-bottom:50px; position:relative;
+}
+.timeline-item:nth-child(odd) { flex-direction:row; }
+.timeline-item:nth-child(even) { flex-direction:row-reverse; }
+.timeline-dot {
+  position:absolute; left:50%; transform:translateX(-50%);
+  width:16px; height:16px; border-radius:50%;
+  background:#050714; border:3px solid #4FC3F7;
+  z-index:2; box-shadow:0 0 12px rgba(79,195,247,0.3);
+  top:10px;
+}
+.timeline-dot.highlight {
+  border-color:#FFD799; background:#050714;
+  box-shadow:0 0 20px rgba(255,215,153,0.5), 0 0 40px rgba(255,215,153,0.2);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%,100% { box-shadow:0 0 20px rgba(255,215,153,0.5); }
+  50% { box-shadow:0 0 40px rgba(255,215,153,0.8), 0 0 60px rgba(255,215,153,0.3); }
+}
+.timeline-content {
+  width:calc(50% - 50px); padding:24px;
+  background:rgba(79,195,247,0.02);
+  border:1px solid rgba(79,195,247,0.08);
+  border-radius:12px; backdrop-filter:blur(8px);
+  transition:all 0.3s;
+}
+.timeline-content:hover {
+  border-color:rgba(79,195,247,0.25);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(79,195,247,0.06);
+}
+.timeline-year {
+  font-size:1.3rem; font-weight:900; letter-spacing:2px;
+  margin-bottom:8px;
+}
+.timeline-year.gold { color:#FFD799; }
+.timeline-year.blue { color:#4FC3F7; }
+.timeline-year.green { color:#80F5E6; }
+.timeline-desc { font-size:0.9rem; color:#E0E0E0; line-height:1.7; }
+.timeline-desc strong { color:#4FC3F7; }
+.timeline-desc .gold-text { color:#FFD799; }
+
+/* ===== 模块四：人物关系图谱 ===== */
+.relation-section { position:relative; }
+.relation-container {
+  position:relative; width:100%; min-height:700px;
+  display:flex; align-items:center; justify-content:center;
+}
+.relation-center {
+  position:relative; z-index:3;
+  width:100px; height:100px; border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, rgba(255,215,153,0.3), rgba(255,183,77,0.1));
+  border:2px solid #FFD799;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.9rem; font-weight:700; color:#FFD799;
+  text-align:center; letter-spacing:2px;
+  box-shadow:0 0 30px rgba(255,215,153,0.3), 0 0 60px rgba(255,215,153,0.1);
+  animation: centerPulse 3s ease-in-out infinite;
+  cursor:pointer;
+}
+@keyframes centerPulse {
+  0%,100% { box-shadow:0 0 30px rgba(255,215,153,0.3), 0 0 60px rgba(255,215,153,0.1); }
+  50% { box-shadow:0 0 50px rgba(255,215,153,0.5), 0 0 80px rgba(255,215,153,0.2); }
+}
+.relation-nodes { position:absolute; inset:0; }
+.relation-node {
+  position:absolute; z-index:2;
+  padding:12px 18px; border-radius:12px;
+  background:rgba(5,7,20,0.9);
+  border:1px solid rgba(79,195,247,0.15);
+  backdrop-filter:blur(8px);
+  cursor:pointer; transition:all 0.3s;
+  font-size:0.85rem; color:#E0E0E0;
+  text-align:center; min-width:100px;
+}
+.relation-node:hover {
+  border-color:#4FC3F7;
+  box-shadow:0 0 20px rgba(79,195,247,0.2);
+  transform:scale(1.08);
+  z-index:5;
+}
+.relation-node .node-name { color:#4FC3F7; font-weight:700; font-size:0.95rem; margin-bottom:2px; }
+.relation-node .node-role { font-size:0.7rem; color:#90A4AE; letter-spacing:1px; }
+.relation-node.highlight { border-color:#FFD799; }
+.relation-node.highlight .node-name { color:#FFD799; }
+.relation-lines { position:absolute; inset:0; z-index:1; pointer-events:none; }
+.relation-line-svg { width:100%; height:100%; position:absolute; top:0; left:0; }
+.rel-line { stroke:rgba(79,195,247,0.15); stroke-width:1; fill:none; transition:all 0.3s; }
+.rel-line.active { stroke:rgba(79,195,247,0.5); stroke-width:1.5; }
+
+/* ===== 模块五：象征意义 ===== */
+.symbol-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:24px;
+}
+.symbol-card {
+  padding:36px 28px; text-align:center;
+  background:rgba(79,195,247,0.02);
+  border:1px solid rgba(79,195,247,0.08);
+  border-radius:16px; backdrop-filter:blur(8px);
+  transition:all 0.3s;
+}
+.symbol-card:hover {
+  border-color:rgba(79,195,247,0.25);
+  transform:translateY(-6px);
+  box-shadow:0 20px 50px rgba(79,195,247,0.06);
+}
+.symbol-icon {
+  font-size:2.5rem; margin-bottom:16px;
+}
+.symbol-card h3 {
+  font-size:1.2rem; color:#FFD799; margin-bottom:12px;
+  font-weight:700; letter-spacing:2px;
+}
+.symbol-card p {
+  font-size:0.9rem; color:#E0E0E0; line-height:1.8;
+  text-align:left;
+}
+
+/* ===== 模块六：经典台词 ===== */
+.quote-section { position:relative; }
+.quote-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+  gap:24px;
+}
+.quote-card {
+  padding:36px 28px;
+  background:rgba(79,195,247,0.02);
+  border:1px solid rgba(79,195,247,0.08);
+  border-left:3px solid #FFD799;
+  border-radius:0 16px 16px 0;
+  backdrop-filter:blur(8px);
+  transition:all 0.3s;
+}
+.quote-card:hover {
+  border-color:rgba(255,215,153,0.3);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(79,195,247,0.06);
+}
+.quote-text {
+  font-size:1.05rem; color:#FFD799; font-weight:500;
+  line-height:1.8; letter-spacing:1px;
+  margin-bottom:16px; font-style:normal;
+}
+.quote-context {
+  font-size:0.8rem; color:#90A4AE; letter-spacing:1px;
+}
+
+/* ===== 页脚 ===== */
+.footer {
+  text-align:center; padding:60px 5%; position:relative; z-index:1;
+  border-top:1px solid rgba(79,195,247,0.06);
+}
+.footer p {
+  color:#90A4AE; font-size:0.8rem; letter-spacing:2px; line-height:2;
+}
+.footer .footer-highlight { color:#4FC3F7; }
+
+/* ===== 响应式 ===== */
+@media(max-width:768px) {
+  .section-padding { padding:60px 5%; }
+  .section-title { font-size:1.6rem; }
+  .timeline-item:nth-child(odd),
+  .timeline-item:nth-child(even) { flex-direction:row; }
+  .timeline-content { width:calc(100% - 60px); margin-left:50px; }
+  .timeline-line { left:20px; transform:none; }
+  .timeline-dot { left:20px; transform:translateX(-50%); }
+  .timeline-item:nth-child(odd) .timeline-content,
+  .timeline-item:nth-child(even) .timeline-content { width:calc(100% - 60px); margin-left:50px; }
+  .profile-grid, .symbol-grid, .quote-grid { grid-template-columns:1fr; }
+  .relation-container { min-height:900px; }
+  .nav-bar { gap:6px; padding:12px 3%; }
+  .nav-bar a { font-size:0.7rem; letter-spacing:1px; }
+}
+
+/* 关系图谱移动端适配 */
+@media(max-width:768px) {
+  .relation-node { font-size:0.7rem; padding:8px 10px; min-width:70px; }
+  .relation-center { width:60px; height:60px; font-size:0.65rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- 粒子画布 -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- 导航 -->
+<nav class="nav-bar">
+  <a href="#home">首页</a>
+  <a href="#profile">人物档案</a>
+  <a href="#timeline">生命时间线</a>
+  <a href="#relations">关系图谱</a>
+  <a href="#symbolism">象征意义</a>
+  <a href="#quotes">经典台词</a>
+</nav>
+
+<!-- ===== 首页封面 ===== -->
+<section id="home" class="hero-section">
+  <div class="hero-bg"></div>
+  <div class="hero-stars"></div>
+  <div class="hero-nebula"></div>
+  <div class="meteor"></div>
+  <div class="meteor"></div>
+  <div class="meteor"></div>
+  <div class="hero-content fade-up">
+    <div class="hero-title">罗辑<br>从凡人蝼蚁，到宇宙执剑，终为文明守墓</div>
+    <div class="hero-subtitle">《三体》唯一破壁的面壁者 · 黑暗森林法则践行者 · 人类文明54年威慑守护者</div>
+    <div class="hero-slogan">宇宙从无温柔，是凡人的坚守，为人类点亮了半个世纪的星光</div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>滚动探索他跨越百年的孤独与救赎</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ===== 模块二：人物基础档案 ===== -->
+<section id="profile" class="section-padding">
+  <div class="container">
+    <h2 class="section-title fade-up">人物基础档案</h2>
+    <div class="profile-grid">
+      <div class="profile-card card-hover fade-up">
+        <div class="profile-label">姓名</div>
+        <div class="profile-value blue">罗辑</div>
+      </div>
+      <div class="profile-card card-hover fade-up">
+        <div class="profile-label">英文标识</div>
+        <div class="profile-value gold">LOGIC <span style="color:#90A4AE;font-size:0.8rem;">—— 逻辑即真理、即生存法则</span></div>
+      </div>
+      <div class="profile-card card-hover fade-up">
+        <div class="profile-label">生卒纪年</div>
+        <div class="profile-value">公元 <span class="gold-text" style="color:#FFD799;">1967年</span> — 掩体纪元 <span class="gold-text" style="color:#FFD799;">67年</span></div>
+      </div>
+      <div class="profile-card card-hover fade-up" style="grid-column:1/-1;">
+        <div class="profile-label">核心身份（按剧情递进）</div>
+        <div class="profile-value" style="font-size:0.95rem;line-height:2;">
+          <span class="profile-tag gold">清华大学社会学教师</span>
+          <span class="profile-tag">天文学背景</span>
+          <span class="profile-tag gold">第四位面壁者</span>
+          <span class="profile-tag">黑暗森林法则创立者</span>
+          <span class="profile-tag gold">地球文明执剑人</span>
+          <span class="profile-tag">地球抵抗组织精神领袖</span>
+          <span class="profile-tag">曲率引擎研究负责人</span>
+          <span class="profile-tag gold">太阳系文明守墓人</span>
+        </div>
+      </div>
+      <div class="profile-card card-hover fade-up" style="grid-column:1/-1;">
+        <div class="profile-label">人物初始特质</div>
+        <div class="profile-value" style="font-size:0.9rem;color:#E0E0E0;">
+          前期随性散漫、利己通透、厌恶宏大叙事，只想平凡度日，是最普通的凡人；<br>
+          后期历经蜕变，背负全人类命运，隐忍孤独、坚守本心，兼具理性与温柔
+        </div>
+      </div>
+      <div class="profile-card card-hover fade-up" style="grid-column:1/-1;">
+        <div class="profile-label">原著专属标签</div>
+        <div class="profile-value">
+          <span class="profile-tag gold">唯一成功的面壁者</span>
+          <span class="profile-tag gold">三体世界唯一恐惧的地球人</span>
+          <span class="profile-tag gold">人类文明最后的理性壁垒</span>
+          <span class="profile-tag gold">黑暗森林的破壁人与守夜人</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ===== 模块三：全生命周期时间线 ===== -->
+<section id="timeline" class="section-padding" style="background:rgba(79,195,247,0.01);">
+  <div class="container">
+    <h2 class="section-title fade-up">全生命周期时间线</h2>
+    <p style="text-align:center;color:#90A4AE;font-size:0.85rem;letter-spacing:2px;margin-bottom:40px;">—— 原著纪年精准复刻 · 每一个节点都凝聚着文明的重量 ——</p>
+    <div class="timeline-track">
+
+      <!-- 公元时代 -->
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content" style="margin-left:auto;">
+          <div class="timeline-year green">公元1967年</div>
+          <div class="timeline-desc">罗辑出生，拥有 <strong>天文学</strong>、<strong>社会学</strong> 双重学术背景，性格自由散漫、通透随性，厌恶责任与束缚</div>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-year green">危机纪元3年前</div>
+          <div class="timeline-desc">任职清华大学社会学教师，生活随性，擅长虚构完美恋人，前女友为白蓉；与杨冬为高中同学</div>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot highlight"></div>
+        <div class="timeline-content" style="margin-left:auto;border-color:rgba(255,215,153,0.2);">
+          <div class="timeline-year gold">危机纪元3年 · 核心转折</div>
+          <div class="timeline-desc">杨冬自杀后，在其墓前偶遇 <span class="gold-text">叶文洁</span>，受叶文洁点拨，得知 <strong>宇宙社会学两大公理、猜疑链、技术爆炸</strong> 核心概念，埋下 <span class="gold-text">黑暗森林法则</span> 的种子，这是其一生命运的开端</div>
+        </div>
+      </div>
+
+      <!-- 危机纪元 -->
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot highlight"></div>
+        <div class="timeline-content" style="border-color:rgba(255,215,153,0.2);">
+          <div class="timeline-year gold">危机纪元3年</div>
+          <div class="timeline-desc">被联合国意外选定为 <strong>第四位面壁者</strong>，成为史上最特殊、最无准备的面壁者；同日遭到 ETO 暗杀（三体世界授意，因三体人恐惧其潜藏的宇宙认知），被 <span class="gold-text">史强</span> 救下</div>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content" style="margin-left:auto;">
+          <div class="timeline-year blue">危机纪元3-8年</div>
+          <div class="timeline-desc">拒绝承担救世责任，利用面壁者特权隐居雪山、湖泊，追寻自由生活，等待自己虚构的恋人 <span class="gold-text">庄颜</span> 出现，是四位面壁者中唯一躺平避世的人</div>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-year blue">危机纪元8年</div>
+          <div class="timeline-desc">庄颜携女儿苏醒，家庭的温暖让罗辑完成 <strong>初步蜕变</strong>，开始正视自身使命，不再逃避责任</div>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content" style="margin-left:auto;">
+          <div class="timeline-year blue">危机纪元12年</div>
+          <div class="timeline-desc">正式潜心研究宇宙社会学，完整推导出 <strong>黑暗森林法则</strong>，掌握对抗三体文明的核心武器</div>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot highlight"></div>
+        <div class="timeline-content" style="border-color:rgba(255,215,153,0.2);">
+          <div class="timeline-year gold">危机纪元208年</div>
+          <div class="timeline-desc">启动 <strong>雪地工程</strong>，利用核弹阵列构建太阳系宇宙坐标广播系统，以自我毁灭为代价威慑三体舰队，三体舰队被迫转向撤离，人类首次获得文明存续主动权</div>
+        </div>
+      </div>
+
+      <!-- 威慑纪元 -->
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot highlight"></div>
+        <div class="timeline-content" style="border-color:rgba(255,215,153,0.2);">
+          <div class="timeline-year gold">威慑纪元1年 - 54年</div>
+          <div class="timeline-desc">正式就任 <strong>地球文明执剑人</strong>，手握引力波宇宙广播开关，以一己之力制衡三体与地球两大文明，维持 <span class="gold-text">54年</span> 绝对和平</div>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content" style="margin-left:auto;">
+          <div class="timeline-year blue">威慑纪元中后期</div>
+          <div class="timeline-desc">人类逐渐遗忘危机，对罗辑的极致孤独与牺牲产生 <strong>非议、猜忌与排斥</strong>，将救世主视为独裁者、威胁者</div>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot highlight"></div>
+        <div class="timeline-content" style="border-color:rgba(255,215,153,0.2);">
+          <div class="timeline-year gold">威慑纪元61年</div>
+          <div class="timeline-desc">主动卸任执剑人，交接权力给 <span class="gold-text">程心</span>，长达半个世纪的孤独威慑落幕，人类命运的接力棒交到了错误的手中</div>
+        </div>
+      </div>
+
+      <!-- 掩体纪元 -->
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-year green">掩体纪元初期</div>
+          <div class="timeline-desc">三体文明解除威慑，发起全面入侵，人类文明再度陷入绝境；罗辑被世人 <strong>误解、追责、审判</strong></div>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content" style="margin-left:auto;">
+          <div class="timeline-year green">掩体纪元中期</div>
+          <div class="timeline-desc">重新扛起责任，担任 <strong>地球抵抗组织精神领袖</strong>，主导曲率驱动引擎飞船研究，为人类保留文明火种</div>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-up">
+        <div class="timeline-dot highlight"></div>
+        <div class="timeline-content" style="border-color:rgba(255,215,153,0.2);">
+          <div class="timeline-year gold">掩体纪元67年 · 人生终点</div>
+          <div class="timeline-desc">太阳系被 <strong>二向箔</strong> 二维化，罗辑留守冥王星地球文明博物馆，成为 <span class="gold-text">太阳系最后的守墓人</span>，与太阳系文明一同湮灭，走完百年悲壮一生</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- ===== 模块四：人物关系图谱 ===== -->
+<section id="relations" class="section-padding relation-section">
+  <div class="container">
+    <h2 class="section-title fade-up">人物关系图谱</h2>
+    <p style="text-align:center;color:#90A4AE;font-size:0.85rem;letter-spacing:2px;margin-bottom:30px;">—— 悬浮人物节点 · 高亮关联羁绊 ——</p>
+    <div class="relation-container fade-up" id="relationContainer">
+      <div class="relation-lines" id="relationLines">
+        <svg class="relation-line-svg" id="relationSvg"></svg>
+      </div>
+      <div class="relation-nodes" id="relationNodes">
+        <!-- 中心节点 -->
+        <div class="relation-center" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);">罗辑</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ===== 模块五：人物象征意义与内核解读 ===== -->
+<section id="symbolism" class="section-padding" style="background:rgba(79,195,247,0.01);">
+  <div class="container">
+    <h2 class="section-title fade-up">人物象征意义与内核解读</h2>
+    <p style="text-align:center;color:#90A4AE;font-size:0.85rem;letter-spacing:2px;margin-bottom:40px;">—— 从唯美画风见宇宙宏大 · 以个人一生观文明兴衰 ——</p>
+    <div class="symbol-grid">
+
+      <div class="symbol-card card-hover fade-up">
+        <div class="symbol-icon">🌱</div>
+        <h3>凡人的终极蜕变</h3>
+        <p>罗辑是《三体》中最真实的普通人——前期无天赋、无抱负、无使命感，只想安稳度日，代表芸芸众生的平凡与自私。但在命运裹挟下，他没有被苦难击溃，从逃避责任到主动背负苍生，完成了凡人到英雄的自我救赎。他证明了英雄从不是天生的，而是在绝境中守住本心、扛起责任的普通人。</p>
+      </div>
+
+      <div class="symbol-card card-hover fade-up">
+        <div class="symbol-icon">⚖️</div>
+        <h3>黑暗森林的理性象征</h3>
+        <p>作为黑暗森林法则的唯一推导者与践行者，罗辑是全书绝对理性的化身。他看透宇宙文明的残酷本质，摒弃人类的天真幻想，不被舆论、人情、道德绑架，以最冷静的思维制衡文明博弈。他的存在，是人类面对残酷宇宙唯一的清醒壁垒。</p>
+      </div>
+
+      <div class="symbol-card card-hover fade-up">
+        <div class="symbol-icon">🌌</div>
+        <h3>孤独坚守的文明象征</h3>
+        <p>54年执剑生涯，孤身一人对抗整个宇宙的恶意，承受全人类的误解与非议，无人理解、无人分担。罗辑的孤独，是文明存续的代价。他象征着所有为集体、为文明默默牺牲、被辜负、被遗忘的守护者，诠释了「伟大的代价是永恒的孤独」。</p>
+      </div>
+
+      <div class="symbol-card card-hover fade-up">
+        <div class="symbol-icon">🪐</div>
+        <h3>文明终末的守墓象征</h3>
+        <p>晚年留守冥王星，见证太阳系二维化覆灭，成为最后的守墓人。此时的罗辑，早已超越个人生死，成为人类文明最后的印记与图腾。他的落幕不是失败，而是对消亡文明最温柔、最悲壮的告别，完美呼应《三体》死神永生的终极主题：文明终会湮灭，但坚守与记忆永恒存在。</p>
+      </div>
+
+      <div class="symbol-card card-hover fade-up" style="grid-column:1/-1;">
+        <div class="symbol-icon">📖</div>
+        <h3>全书核心主题载体</h3>
+        <p>罗辑的一生，串联起《三体》所有核心剧情与内核：宇宙的残酷、人性的复杂、文明的博弈、平凡与伟大的对立、牺牲与辜负的宿命。读懂罗辑，便读懂了黑暗森林的生存法则，读懂了人类文明的渺小与坚韧。</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== 模块六：经典台词与原著名场面 ===== -->
+<section id="quotes" class="section-padding quote-section">
+  <div class="container">
+    <h2 class="section-title fade-up">经典台词与原著名场面</h2>
+    <div class="quote-grid">
+
+      <div class="quote-card card-hover fade-up">
+        <div class="quote-text">"我是一个普通人，担负不起拯救全人类的责任。"</div>
+        <div class="quote-context">—— 前期平凡本心 · 面壁者初期的迷茫与坦诚</div>
+      </div>
+
+      <div class="quote-card card-hover fade-up">
+        <div class="quote-text">"黑暗森林法则：宇宙就是一座黑暗森林，每个文明都是带枪的猎人。"</div>
+        <div class="quote-context">—— 核心真理 · 宇宙社会学的终极本质</div>
+      </div>
+
+      <div class="quote-card card-hover fade-up">
+        <div class="quote-text">"威慑从来不是妥协，是让敌人不敢动手的底气。"</div>
+        <div class="quote-context">—— 执剑者内核 · 54年威慑的终极信念</div>
+      </div>
+
+      <div class="quote-card card-hover fade-up">
+        <div class="quote-text">"我守在这里，送太阳系最后一程。"</div>
+        <div class="quote-context">—— 守墓人终极独白 · 文明终末的温柔告别</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== 页脚 ===== -->
+<footer class="footer">
+  <p>罗辑 · 从凡人蝼蚁，到宇宙执剑，终为文明守墓</p>
+  <p>《三体》人物主题站 · 致敬刘慈欣与罗辑 · 献给每一个在黑暗中坚守的凡人</p>
+  <p style="margin-top:12px;font-size:0.7rem;">宇宙从无温柔，是凡人的坚守，为人类点亮了半个世纪的星光</p>
+  <p style="margin-top:20px;font-size:0.65rem;color:rgba(144,164,174,0.5);">
+    — 内容严格对标《三体II：黑暗森林》《三体III：死神永生》原著情节 —
+  </p>
+</footer>
+
+<script>
+// ===== 粒子系统 =====
+(function() {
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let mouseX = -1000, mouseY = -1000;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 1.5 + 0.3;
+      this.speedX = (Math.random() - 0.5) * 0.15;
+      this.speedY = (Math.random() - 0.5) * 0.15;
+      this.opacity = Math.random() * 0.6 + 0.2;
+      this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+      this.twinklePhase = Math.random() * Math.PI * 2;
+      this.color = Math.random() > 0.7 ? '#B388FF' : (Math.random() > 0.5 ? '#4FC3F7' : '#ffffff');
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.twinklePhase += this.twinkleSpeed;
+      if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+    }
+    draw() {
+      const currentOpacity = this.opacity * (0.6 + 0.4 * Math.sin(this.twinklePhase));
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = currentOpacity;
+      ctx.fill();
+
+      // 鼠标互动：靠近时光晕
+      const dx = this.x - mouseX;
+      const dy = this.y - mouseY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = 0.08 * (1 - dist / 100);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+  document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// ===== 滚动渐入 =====
+(function() {
+  const els = document.querySelectorAll('.fade-up');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(el => observer.observe(el));
+})();
+
+// ===== 关系图谱 =====
+(function() {
+  const container = document.getElementById('relationContainer');
+  const nodesContainer = document.getElementById('relationNodes');
+  const svg = document.getElementById('relationSvg');
+
+  const relations = [
+    { name:'叶文洁', role:'启蒙导师 · 命运引路人', cx:'15%', cy:'15%', desc:'杨冬墓前的短暂对话，让罗辑窥见宇宙真相，彻底改写其人生轨迹。叶文洁的善恶矛盾，成为罗辑坚守人性底线的参照。' },
+    { name:'史强', role:'生死挚友 · 最温暖的世俗羁绊', cx:'85%', cy:'20%', desc:'唯一懂罗辑、无条件信任罗辑的凡人。数次救下罗辑性命，是黑暗时代里最可靠的支撑。' },
+    { name:'庄颜', role:'救赎羁绊 · 人性的温柔底色', cx:'20%', cy:'50%', desc:'从虚构的完美恋人到真实的爱人，家庭与爱意让利己的普通人罗辑学会责任与坚守，是他背负全人类苦难的核心初心。' },
+    { name:'程心', role:'正反对照 · 两代执剑人', cx:'80%', cy:'50%', desc:'罗辑代表绝对理性与孤独坚守，程心代表泛滥善意与致命软弱。二人的交替是人类文明从清醒到沉沦的缩影。' },
+    { name:'三体文明', role:'宿命制衡 · 唯一敬畏的地球人', cx:'50%', cy:'12%', desc:'三体世界唯一恐惧的地球人。三体人始终无法预判罗辑的布局，他以凡人之躯压制高等文明半个世纪。' },
+    { name:'其他面壁者', role:'对比羁绊 · 唯一成功的面壁者', cx:'15%', cy:'85%', desc:'泰勒、雷迪亚兹、希恩斯全部破壁失败；唯有罗辑跳出思维束缚，真正完成面壁使命。' },
+    { name:'人类文明', role:'双向辜负 · 悲壮的宿命照', cx:'85%', cy:'80%', desc:'罗辑倾尽一生守护的人类，最终猜忌、审判、抛弃他。人类享受庇护，却无法承受他的理性与孤独。' }
+  ];
+
+  // 创建SVG连线
+  function drawLines() {
+    const rect = container.getBoundingClientRect();
+    svg.setAttribute('viewBox', '0 0 ' + rect.width + ' ' + rect.height);
+    svg.innerHTML = '';
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    relations.forEach(r => {
+      const px = parseFloat(r.cx) / 100 * rect.width;
+      const py = parseFloat(r.cy) / 100 * rect.height;
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', cx);
+      line.setAttribute('y1', cy);
+      line.setAttribute('x2', px);
+      line.setAttribute('y2', py);
+      line.setAttribute('class', 'rel-line');
+      line.setAttribute('data-target', r.name);
+      svg.appendChild(line);
+    });
+  }
+
+  // 创建关系节点
+  function createNodes() {
+    relations.forEach((r, idx) => {
+      const node = document.createElement('div');
+      node.className = 'relation-node';
+      node.style.left = r.cx;
+      node.style.top = r.cy;
+      node.style.transform = 'translate(-50%,-50%)';
+      node.style.animationDelay = (idx * 0.15) + 's';
+      node.innerHTML = '<div class="node-name">' + r.name + '</div><div class="node-role">' + r.role + '</div>';
+      node.title = r.desc;
+      node.addEventListener('mouseenter', () => {
+        document.querySelectorAll('.rel-line[data-target="' + r.name + '"]').forEach(l => l.classList.add('active'));
+        node.classList.add('highlight');
+      });
+      node.addEventListener('mouseleave', () => {
+        document.querySelectorAll('.rel-line').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.relation-node').forEach(n => n.classList.remove('highlight'));
+      });
+      nodesContainer.appendChild(node);
+    });
+  }
+
+  setTimeout(() => {
+    drawLines();
+    createNodes();
+  }, 300);
+
+  window.addEventListener('resize', () => {
+    drawLines();
+  });
+})();
+</script>
+
+</body>
+</html>
