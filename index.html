@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive product mockup for ReBoot Career Gym, an AI career capability service for low-income youth.">
+  <link rel="icon" href="data:,">
+  <title>ReBoot Career Gym | AI Career Capability-as-a-Service</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="assets/lucide.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="brand" href="#overview" aria-label="ReBoot Career Gym home">
+      <span class="brand-mark" aria-hidden="true"><i data-lucide="sparkles"></i></span>
+      <span>
+        <strong>ReBoot Career Gym</strong>
+        <small>AI Career Capability-as-a-Service</small>
+      </span>
+    </a>
+
+    <nav class="topnav" id="primaryNav" aria-label="Page sections">
+      <a href="#stations">Stations</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#coach">AI Coach</a>
+      <a href="#passport">Passport</a>
+      <a href="#technology">Technology</a>
+      <a href="#evidence">Evidence</a>
+    </nav>
+
+    <div class="header-actions">
+      <span class="live-pill" aria-label="Current pilot date and week">
+        <i data-lucide="calendar-days"></i>
+        <span data-program-status>Week 8 of 28 · 5 Oct 2026</span>
+      </span>
+      <button class="icon-button menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primaryNav" aria-label="Open navigation">
+        <i data-lucide="menu"></i>
+      </button>
+      <button class="btn btn-dark" type="button" data-open-session>
+        <i data-lucide="play"></i>
+        <span>Preview session</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="mainContent">
+    <section class="overview" id="overview">
+      <div class="overview-copy">
+        <p class="eyebrow">For Sham Shui Po and Kwun Tong youth</p>
+        <h1>From AI access to job-ready capability.</h1>
+        <p class="lede">
+          A Cantonese-first service for low-income youth aged 18 to 29 in Sham Shui Po and Kwun Tong who are unemployed, underemployed or preparing for training. Five guided AI career stations turn mobile access into verified applications, interview practice and an employer-readable Career Passport.
+        </p>
+
+        <div class="overview-actions">
+          <a class="btn btn-primary" href="#stations">
+            <i data-lucide="route"></i>
+            Explore the five AI stations
+          </a>
+          <button class="btn btn-quiet" type="button" data-open-session>
+            <i data-lucide="user-round-check"></i>
+            Start the session demo
+          </button>
+        </div>
+
+        <dl class="summary-stats" aria-label="Programme summary">
+          <div>
+            <dt>Age range</dt>
+            <dd>18-29</dd>
+          </div>
+          <div>
+            <dt>AI career stations</dt>
+            <dd>5</dd>
+          </div>
+          <div>
+            <dt>Delivery model</dt>
+            <dd>3 cohorts</dd>
+          </div>
+          <div>
+            <dt>Pilot weeks</dt>
+            <dd>28</dd>
+          </div>
+        </dl>
+      </div>
+
+      <figure class="cohort-visual">
+        <img src="assets/cohort-learning.jpg" alt="Young people learning together with laptops in a community setting">
+        <figcaption>
+          <span class="visual-status"><i data-lucide="circle-dot"></i> Cohort 2 active · <span data-cohort-dates>Week 8</span></span>
+          <strong>Practice Station</strong>
+          <span>Cantonese and English interview simulation</span>
+        </figcaption>
+        <div class="visual-float visual-float-top">
+          <i data-lucide="shield-check"></i>
+          <span><strong>Human reviewed</strong>AI supports, people decide</span>
+        </div>
+        <div class="visual-float visual-float-bottom">
+          <i data-lucide="badge-check"></i>
+          <span><strong>Career Passport</strong>Verified tasks, not a generic certificate</span>
+        </div>
+      </figure>
+    </section>
+
+    <section class="section-block" id="stations">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Five AI career stations</p>
+          <h2>One journey. Five verifiable outcomes.</h2>
+        </div>
+        <p class="section-note">Every station produces a real job-search task, a capability score and evidence that can be reviewed by a human coach.</p>
+      </div>
+
+      <div class="journey-progress" aria-label="Sample participant progress">
+        <div>
+          <span class="eyebrow">Sample participant progress</span>
+          <strong id="journeyProgressText">0 of 5 stations verified</strong>
+        </div>
+        <div class="journey-progress__track" aria-hidden="true">
+          <span id="journeyProgressBar" style="width: 0%"></span>
+        </div>
+        <button class="btn btn-quiet btn-small" id="resetJourney" type="button">
+          <i data-lucide="rotate-ccw"></i>
+          Reset demo
+        </button>
+      </div>
+
+      <div class="station-shell">
+        <div class="station-tabs" id="stationTabs" role="tablist" aria-label="Career stations"></div>
+        <article class="station-detail" id="stationDetail" role="tabpanel" aria-live="polite"></article>
+      </div>
+    </section>
+
+    <section class="section-block" id="timeline">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">28-week pilot timeline</p>
+          <h2>Build, run, prove.</h2>
+        </div>
+        <p class="section-note">The pilot is deliberately staged so partners, privacy controls and task quality are checked before delivery scales.</p>
+      </div>
+
+      <div class="timeline-grid">
+        <article class="timeline-card" data-phase="build">
+          <span class="timeline-week">Weeks 1-4</span>
+          <h3>Build</h3>
+          <p>NGO agreements, coach training, privacy setup and the Hong Kong AI task library.</p>
+        </article>
+        <article class="timeline-card" data-phase="run">
+          <span class="timeline-week">Weeks 5-20</span>
+          <h3>Run</h3>
+          <p>Three cohorts complete the five stations with human coaching and weekly quality checks.</p>
+        </article>
+        <article class="timeline-card" data-phase="prove">
+          <span class="timeline-week">Weeks 21-28</span>
+          <h3>Prove</h3>
+          <p>Independent review, employer validation and a clear stop, repeat or scale decision.</p>
+        </article>
+      </div>
+
+      <div class="program-clock">
+        <div>
+          <span class="eyebrow">Simulated pilot date</span>
+          <strong data-sim-date>5 October 2026</strong>
+          <span data-program-stage>Run phase</span>
+        </div>
+        <div class="program-clock__progress">
+          <div class="progress-track" aria-label="Pilot progress">
+            <span data-program-progress style="width: 25%"></span>
+          </div>
+          <span data-program-week>Week 8 of 28</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace-grid" id="coach">
+      <article class="coach-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Agentic AI career workflow</p>
+            <h2>Continuous support, not a chatbot.</h2>
+          </div>
+          <div class="panel-badges">
+            <span class="status-chip"><i data-lucide="languages"></i> Cantonese-first</span>
+            <span class="status-chip"><i data-lucide="lock-keyhole"></i> PII redacted</span>
+          </div>
+        </div>
+
+        <div class="chat-window" id="chatWindow" aria-live="polite">
+          <div class="chat-message ai">
+            <span class="chat-avatar"><i data-lucide="bot"></i></span>
+            <div>
+              <strong>Career Agent</strong>
+              <p>I can run a connected task from job analysis to verified evidence. I support the participant, while a human coach reviews any decision or sensitive output.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="prompt-chips" id="promptChips">
+          <button type="button" data-prompt="decode">Decode a job ad</button>
+          <button type="button" data-prompt="tailor">Tailor my CV</button>
+          <button type="button" data-prompt="apply">Track an application</button>
+          <button type="button" data-prompt="interview">Practise Cantonese interview</button>
+          <button type="button" data-prompt="verify">Check this AI answer</button>
+          <button type="button" data-prompt="privacy">Protect personal data</button>
+          <button type="button" data-prompt="scam">Check a job offer</button>
+        </div>
+
+        <form class="chat-compose" id="chatForm">
+          <label class="sr-only" for="chatInput">Ask the career agent</label>
+          <input id="chatInput" type="text" placeholder="Ask about a career task..." autocomplete="off">
+          <button class="btn btn-primary" type="submit" aria-label="Send message">
+            <i data-lucide="send-horizontal"></i>
+            Send
+          </button>
+        </form>
+        <button class="text-button" id="clearChat" type="button">
+          <i data-lucide="trash-2"></i>
+          Clear conversation
+        </button>
+      </article>
+
+      <article class="passport-panel" id="passport">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">AI Career Passport</p>
+            <h2>Verified tasks employers can understand.</h2>
+          </div>
+          <span class="status-chip status-chip-amber"><i data-lucide="calendar-check-2"></i> <span data-passport-week>Week 8 · 5 Oct 2026</span></span>
+        </div>
+
+        <div class="passport-profile">
+          <div class="profile-initials" aria-hidden="true">LW</div>
+          <div>
+            <strong>Ling W.</strong>
+            <span>Job target: Junior Operations Assistant</span>
+          </div>
+          <span class="passport-score" data-passport-score>80<small>/100</small></span>
+        </div>
+
+        <div class="progress-track" aria-label="Career passport completion">
+          <span data-passport-progress style="width: 60%"></span>
+        </div>
+
+        <div class="skill-list">
+          <div data-skill="decode"><span><i data-lucide="scan-search"></i> Decode a target job</span><b>Verified</b></div>
+          <div data-skill="tailor"><span><i data-lucide="file-pen-line"></i> Evidence-based CV</span><b>Verified</b></div>
+          <div data-skill="apply"><span><i data-lucide="files"></i> Application workflow</span><b>Verified</b></div>
+          <div data-skill="practice"><span><i data-lucide="mic-vocal"></i> Interview practice</span><b>Pending</b></div>
+          <div data-skill="verify"><span><i data-lucide="shield-check"></i> Safe AI verification</span><b>Pending</b></div>
+        </div>
+
+        <div class="capability-strip" aria-label="Capability domains">
+          <span>Prompting</span>
+          <span>Verification</span>
+          <span>Privacy</span>
+          <span>Bias awareness</span>
+          <span>Result application</span>
+        </div>
+
+        <div class="passport-actions">
+          <button class="btn btn-primary btn-full" type="button" data-open-passport>
+            <i data-lucide="badge-check"></i>
+            View sample passport
+          </button>
+          <button class="btn btn-quiet btn-full" type="button" data-download-passport>
+            <i data-lucide="download"></i>
+            Download sample evidence
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <section class="section-block" id="technology">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Practical technology design</p>
+          <h2>Proven components, clearly controlled.</h2>
+        </div>
+        <p class="section-note">The service integrates existing AI services, open frameworks and local Hong Kong content. It does not train an expensive custom model or build unnecessary hardware.</p>
+      </div>
+
+      <div class="tech-grid">
+        <article class="tech-card">
+          <span class="tech-icon"><i data-lucide="workflow"></i></span>
+          <h3>Agentic workflow</h3>
+          <p>Connected tasks across job analysis, CV revision, interview practice and application tracking.</p>
+        </article>
+        <article class="tech-card">
+          <span class="tech-icon"><i data-lucide="database-zap"></i></span>
+          <h3>Localised RAG</h3>
+          <p>Hong Kong job information, public services and hiring workflows form the knowledge base.</p>
+        </article>
+        <article class="tech-card">
+          <span class="tech-icon"><i data-lucide="user-x"></i></span>
+          <h3>PII redaction</h3>
+          <p>Personal identifiers are removed before content reaches the AI model.</p>
+        </article>
+        <article class="tech-card">
+          <span class="tech-icon"><i data-lucide="audio-waveform"></i></span>
+          <h3>Cantonese voice AI</h3>
+          <p>Local-language voice practice for behavioural and role-specific interview questions.</p>
+        </article>
+        <article class="tech-card">
+          <span class="tech-icon"><i data-lucide="file-check-2"></i></span>
+          <h3>Evidence checker</h3>
+          <p>Generated claims are compared with the participant's verified experience and records.</p>
+        </article>
+        <article class="tech-card">
+          <span class="tech-icon"><i data-lucide="gauge"></i></span>
+          <h3>Capability scoring</h3>
+          <p>Prompting, verification, privacy, bias awareness and result application are scored as separate capabilities.</p>
+        </article>
+        <article class="tech-card">
+          <span class="tech-icon"><i data-lucide="badge-check"></i></span>
+          <h3>Verifiable badge</h3>
+          <p>Completion is converted into a capability record that an employer can review.</p>
+        </article>
+      </div>
+
+      <div class="boundary-strip">
+        <i data-lucide="shield-check"></i>
+        <p><strong>Clear technology boundary.</strong> No custom large-model training, no new hardware requirement and no complex blockchain platform. Spend is focused on integration, local content and service quality.</p>
+      </div>
+    </section>
+
+    <section class="section-block evidence-section" id="evidence">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Impact and trust</p>
+          <h2>Capability, opportunity and control.</h2>
+        </div>
+      </div>
+
+      <div class="evidence-grid">
+        <article class="impact-panel">
+          <h3>Impact targets</h3>
+          <div class="impact-list">
+            <div><span>Complete all five stations</span><strong>70%</strong></div>
+            <div><span>Submit three tailored applications</span><strong>50%</strong></div>
+            <div><span>Reach an interview</span><strong>30%</strong></div>
+            <div><span>Enter work, internship or training</span><strong>20%</strong></div>
+          </div>
+        </article>
+
+        <article class="ace-panel">
+          <h3>A.C.E. platform authority</h3>
+          <div class="ace-list">
+            <div>
+              <span class="ace-letter">A</span>
+              <p><strong>Adaptive</strong>AI and data workflow integration</p>
+            </div>
+            <div>
+              <span class="ace-letter">C</span>
+              <p><strong>Compliant</strong>Role-based access and aligned controls</p>
+            </div>
+            <div>
+              <span class="ace-letter">E</span>
+              <p><strong>Explainable</strong>Auditable data and decision trails</p>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="comparison-block">
+        <div class="comparison-heading">
+          <p class="eyebrow">Why it is different</p>
+          <h3>From access alone to verified job readiness.</h3>
+        </div>
+        <div class="table-scroll">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Existing model</th>
+                <th scope="col">Main gap</th>
+                <th scope="col">ReBoot Career Gym</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Device donation</td>
+                <td>Delivery does not guarantee use</td>
+                <td>AI job-search capability as the outcome</td>
+              </tr>
+              <tr>
+                <td>Digital literacy course</td>
+                <td>Generic content, limited employment link</td>
+                <td>Each task connects to a real hiring process</td>
+              </tr>
+              <tr>
+                <td>Job centre</td>
+                <td>Provides vacancies, not AI capability</td>
+                <td>Role, capability, practice and evidence together</td>
+              </tr>
+              <tr>
+                <td>General AI tools</td>
+                <td>English-first and verification is uncertain</td>
+                <td>Cantonese-first with verification and safety controls</td>
+              </tr>
+              <tr>
+                <td>Traditional CV course</td>
+                <td>One-off service with limited follow-through</td>
+                <td>Continuous stations, scoring and follow-up</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="advantage-grid">
+          <div><i data-lucide="map-pinned"></i><strong>Local task library</strong><span>Hong Kong hiring workflows and public services</span></div>
+          <div><i data-lucide="shield-check"></i><strong>Safety score</strong><span>Prompting, verification, privacy, bias and application</span></div>
+          <div><i data-lucide="network"></i><strong>Partner network</strong><span>NGOs, schools, employers and employment services</span></div>
+          <div><i data-lucide="badge-check"></i><strong>Verified Passport</strong><span>Employer-readable evidence of completed capability</span></div>
+          <div><i data-lucide="chart-no-axes-combined"></i><strong>Outcome data</strong><span>Real task completion and employment results feed improvement</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>ReBoot Career Gym product mockup · Sample data only</span>
+    <span>Human oversight · Privacy by design · Employer-verifiable evidence</span>
+  </footer>
+
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="icon-button modal-close" type="button" data-close-modal aria-label="Close dialog">
+        <i data-lucide="x"></i>
+      </button>
+      <p class="eyebrow" id="modalEyebrow">Interactive preview</p>
+      <h2 id="modalTitle">Participant session</h2>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="button" data-close-modal>
+          <i data-lucide="check"></i>
+          Back to console
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
